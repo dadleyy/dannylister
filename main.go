@@ -4,6 +4,7 @@ import "os"
 import "fmt"
 import "flag"
 import "path/filepath"
+import "encoding/json"
 
 type optionsT struct {
 	Help bool
@@ -125,5 +126,12 @@ func main() {
 		return
 	}
 
-	fmt.Println(tree)
+	output, err := json.Marshal(tree)
+
+	if err != nil {
+		fmt.Printf("Error while encoding tree as json: %s\n", err.Error())
+		return
+	}
+
+	fmt.Println(string(output))
 }
