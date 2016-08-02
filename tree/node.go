@@ -18,10 +18,12 @@ func (t *Node) Collect(recurse bool) error {
 		return err
 	}
 
+	// if this node is not a directory, there is nothing to collect.
 	if t.IsDir() != true {
 		return nil
 	}
 
+	// if it is a directory, we need to open it up to get all of the children
 	file, err := os.Open(t.FullPath)
 
 	if err != nil {
@@ -64,7 +66,7 @@ func (t *Node) Collect(recurse bool) error {
 		}
 
 		// if we were told to recurse, have the child collect all it's nodes as well
-		if recurse != true {
+		if recurse != true || info.IsDir() != true {
 			t.Children = append(t.Children, child)
 			continue
 		}
