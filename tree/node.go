@@ -1,6 +1,7 @@
 package tree
 
 import "os"
+import "time"
 import "path/filepath"
 
 type Node struct {
@@ -8,6 +9,27 @@ type Node struct {
 	FullPath string
 	Children []Node
 	Link string
+}
+
+type NodeInfo struct {
+	ModifiedTime time.Time
+	Name string
+	IsLink bool
+	IsDir bool
+	LinksTo string
+	Size int64
+	Children []NodeInfo
+}
+
+func (t Node) Reduce() (red NodeInfo) {
+	red.ModifiedTime = t.ModTime()
+	red.Name, red.LinksTo, red.IsLink, red.IsDir, red.Size = t.Name(), t.Link, t.Link != "", t.IsDir(), t.Size()
+
+	for _, child := range t.Children {
+		red.Children = append(red.Children, child.Reduce())
+	}
+
+	return
 }
 
 func (t *Node) Collect(recurse bool) error {
@@ -31,7 +53,6 @@ func (t *Node) Collect(recurse bool) error {
 	}
 
 	children, err := file.Readdir(0)
-
 
 	if err != nil {
 		return err

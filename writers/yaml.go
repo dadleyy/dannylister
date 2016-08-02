@@ -5,7 +5,8 @@ import "github.com/go-yaml/yaml"
 import "github.com/dadleyy/dannylister/tree"
 
 func Yaml(output io.Writer, root tree.Node) (int, error) {
-	buffer, err := yaml.Marshal(&root)
+	reduction := root.Reduce()
+	buffer, err := yaml.Marshal(&reduction)
 
 	if err != nil {
 		return -1, err
