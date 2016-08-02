@@ -9,7 +9,6 @@ import "github.com/dadleyy/dannylister/tree"
 import "github.com/dadleyy/dannylister/writers"
 
 type optionsT struct {
-	Help bool
 	Recursive bool
 	WorkingDir string
 	Output string
@@ -18,17 +17,12 @@ type optionsT struct {
 func main() {
 	var options optionsT
 	start := time.Now()
-	flag.BoolVar(&options.Help, "help", false, "display this help text")
 	flag.BoolVar(&options.Recursive, "recursive", false, "when set, list files recursively. default: false")
 	flag.StringVar(&options.WorkingDir, "path", "./", "specifies the working directory for the file scan")
 	flag.StringVar(&options.Output, "output", "text", "specifies the type of format to output to stdout. options are: \"json\", \"yaml\" or \"text\". default is \"text\"")
 
 	flag.Parse()
 
-	if options.Help == true {
-		flag.PrintDefaults()
-		return
-	}
 
 	info, err := os.Stat(options.WorkingDir)
 
@@ -66,5 +60,5 @@ func main() {
 		fmt.Printf("invalid format\n")
 	}
 
-	fmt.Printf("took %f miliseconds\n", time.Since(start).Seconds() * 1000)
+	fmt.Printf("\ntook %f miliseconds\n", time.Since(start).Seconds() * 1000)
 }
