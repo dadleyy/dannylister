@@ -64,11 +64,14 @@ func (t *Node) Collect(recurse bool) error {
 		}
 
 		// if we were told to recurse, have the child collect all it's nodes as well
-		if recurse == true {
-			err = child.Collect(true)
-			if err != nil {
-				return err
-			}
+		if recurse != true {
+			t.Children = append(t.Children, child)
+			continue
+		}
+
+		err = child.Collect(true)
+		if err != nil {
+			return err
 		}
 
 		// add this child to our list and move on
