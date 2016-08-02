@@ -112,9 +112,18 @@ func main() {
 		return
 	}
 
+	// create the start of the tree that we will build to assemble all of the files 
+	// we encounter. we'll later send this into a writer to output the tree in the 
+	// format prescribed by the user
 	tree := treeNode{options.WorkingDir, options.WorkingDir, make([]treeNode, 0), ""}
 
+	// launch our collection process
 	err = tree.Collect(options.Recursive)
+
+	if err != nil {
+		fmt.Printf("Error while traversing the file sytem: %s\n", err.Error())
+		return
+	}
 
 	fmt.Println(tree)
 }
