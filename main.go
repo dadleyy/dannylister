@@ -60,6 +60,8 @@ func main() {
 		writers.Yaml(os.Stdout, root)
 	case "json":
 		writers.Json(os.Stdout, root)
+	case "text":
+		writers.Text(os.Stdout, root)
 	default:
 		fmt.Printf("invalid format\n")
 	}
