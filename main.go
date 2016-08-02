@@ -40,9 +40,13 @@ func (t *treeNode) Collect(recurse bool) error {
 
 	children, err := file.Readdir(0)
 
+
 	if err != nil {
 		return err
 	}
+
+	// cleanup the open file
+	file.Close()
 
 	// now that we've collected all of the FileInfo objects of items in our directory,
 	// we can loop over each creating new nodes and adding them into our children slice
