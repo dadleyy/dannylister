@@ -14,22 +14,21 @@ type optionsT struct {
 }
 
 type treeNode struct {
-	Name string
+	os.FileInfo
 	FullPath string
 	Children []treeNode
 	Link string
 }
 
 func (t *treeNode) Collect(recurse bool) error {
-	info, err := os.Stat(t.FullPath)
+	var err error
+	t.FileInfo, err = os.Stat(t.FullPath)
 
 	if err != nil {
 		return err
 	}
 
-	t.Name = info.Name()
-
-	if info.IsDir() != true {
+	if t.IsDir() != true {
 		return nil
 	}
 
@@ -52,10 +51,10 @@ func (t *treeNode) Collect(recurse bool) error {
 		full := filepath.Join(t.FullPath, info.Name())
 
 		// create the instance of the tree node
-		child := treeNode{info.Name(), full, make([]treeNode, 0), ""}
+		child := treeNode{info, full, make([]treeNode, 0), ""}
 
 		// find out if this is a symbolic link
-		if mode := info.Mode(); (mode & os.ModeSymlink) != 0 {
+		if mode := child.Mode(); (mode & os.ModeSymlink) != 0 {
 			dest, err := os.Readlink(full)
 
 			// if we received an error here something strange happened; the os told us this
@@ -116,7 +115,7 @@ func main() {
 	// create the start of the tree that we will build to assemble all of the files 
 	// we encounter. we'll later send this into a writer to output the tree in the 
 	// format prescribed by the user
-	tree := treeNode{options.WorkingDir, options.WorkingDir, make([]treeNode, 0), ""}
+	tree := treeNode{FullPath: options.WorkingDir}
 
 	// launch our collection process
 	err = tree.Collect(options.Recursive)
